@@ -171,5 +171,16 @@
             color: var(--color-primary);
 
         }
+
+        .main-content {
+            padding-top: 0;
+        }
+
+        .main-content-list {
+            display: grid;
+            /* repete os grids em posição de coluna com largura minima de 340 px, se não for possível ocupa um fragmento inteiro da tela */
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: var(--spacing-gutter-large);
+        }
     </style>
 </head>
