@@ -16,10 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.conf.urls.static import static
+# importa o arquivo settings.py (da pra fazer direto mas não é recomendado)
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # inclui as urls específicas do app para deixar o código melhor
     path('', include('recipes.urls'))
 ]
+
+# serve para o django compreender que deve servir os arquivos que estão nessa pasta quando forem solicitados
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
