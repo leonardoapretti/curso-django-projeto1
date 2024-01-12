@@ -39,3 +39,6 @@ class Recipe(models.Model):
     class Meta:
         verbose_name = 'Receita'
         verbose_name_plural = 'Receitas'
+
+    def __str__(self):
+        return self.title
