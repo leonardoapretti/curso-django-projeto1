@@ -1,4 +1,8 @@
 from django.db import models
+from dja
+
+class Category(models.Model):
+    name = models.CharField(max_length=65)
 
 
 class Recipe(models.Model):
@@ -17,3 +21,6 @@ class Recipe(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(False)
     cover = models.ImageField(upload_to='recipes/covers/%Y/%m/%d/')
+    # quando apagar a categoria vinculada altera o valor do campo para null
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey()
