@@ -5,6 +5,15 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     name = models.CharField(max_length=65)
 
+    # Define o nome singular e plural que aparecerá na admin do django
+    class Meta:
+        verbose_name = 'Categoria'
+        verbose_name_plural = 'Categorias'
+
+    # Define o nome que aparecerá quando esse model for chamado como string (quando a gente abre as categorias na admin do django é o atributo definido aqui que será exibido)
+    def __str__(self):
+        return self.name
+
 
 class Recipe(models.Model):
     title = models.CharField(max_length=65)
@@ -26,3 +35,7 @@ class Recipe(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name = 'Receita'
+        verbose_name_plural = 'Receitas'
