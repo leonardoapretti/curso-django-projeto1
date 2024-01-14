@@ -23,11 +23,11 @@ def category(request, category_id):
 
 
 def recipe(request, id_recipe):
-    # recipe = Recipe.objects.filter(id=id_recipe)
-    recipe = make_recipe()
+    recipe = Recipe.objects.filter(
+        id=id_recipe, is_published=True).order_by('-id').first()
+
     context = {
         'recipe': recipe,
         'is_detail_page': True,
-        'request': request,
     }
     return render(request, 'recipes/pages/recipe_view.html', context)
