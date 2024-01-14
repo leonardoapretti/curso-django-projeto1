@@ -16,6 +16,7 @@ def category(request, category_id):
         category__id=category_id, is_published=True).order_by('-id')
     context = {
         'recipes': recipes,
+        'title': f'{recipes.first().category.name} - Category'
     }
     return render(request, 'recipes/pages/category.html', context=context)
 
