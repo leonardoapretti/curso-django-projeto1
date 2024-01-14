@@ -21,10 +21,11 @@ def category(request, category_id):
 
 
 def recipe(request, id_recipe):
+    # recipe = Recipe.objects.filter(id=id_recipe)
+    recipe = make_recipe()
     context = {
-        # 'recipe': Recipe.objects.filter(id=id_recipe),
-        'recipe': make_recipe(),
+        'recipe': recipe,
         'is_detail_page': True,
-        'request': request
+        'request': request,
     }
     return render(request, 'recipes/pages/recipe_view.html', context)
