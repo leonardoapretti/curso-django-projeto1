@@ -4,7 +4,7 @@ from recipes.models import Recipe
 
 
 def home(request):
-    recipes = Recipe.objects.all().order_by('-id')
+    recipes = Recipe.objects.filter(is_published=True).order_by('-id')
     context = {
         'recipes': recipes,
     }
@@ -12,15 +12,17 @@ def home(request):
 
 
 def category(request, category_id):
-    recipes = Recipe.objects.filter(category__id=category_id).order_by('-id')
+    recipes = Recipe.objects.filter(
+        category__id=category_id, is_published=True).order_by('-id')
     context = {
         'recipes': recipes,
     }
-    return render(request, 'recipes/pages/home.html', context=context)
+    return render(request, 'recipes/pages/category.html', context=context)
 
 
-def recipe(request, id):
+def recipe(request, id_recipe):
     context = {
+        # 'recipe': Recipe.objects.filter(id=id_recipe),
         'recipe': make_recipe(),
         'is_detail_page': True,
         'request': request

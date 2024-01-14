@@ -29,7 +29,8 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # adiciona essa data no momento de atualização do objeto
     updated_at = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(False)
+    is_published = models.BooleanField(
+        default=False, verbose_name='Está publicado?')
     cover = models.ImageField(upload_to='recipes/covers/%Y/%m/%d/')
     # quando apagar a categoria vinculada altera o valor do campo para null
     category = models.ForeignKey(
