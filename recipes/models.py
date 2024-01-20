@@ -31,7 +31,8 @@ class Recipe(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(
         default=False, verbose_name='Está publicado?')
-    cover = models.ImageField(upload_to='recipes/covers/%Y/%m/%d/')
+    cover = models.ImageField(
+        upload_to='recipes/covers/%Y/%m/%d/', null=True, blank=True, default=None)
     # quando apagar a categoria vinculada altera o valor do campo para null
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True, blank=True, default=None)
