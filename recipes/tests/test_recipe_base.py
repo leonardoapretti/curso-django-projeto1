@@ -48,6 +48,7 @@ class RecipeTestBase(TestCase):
             author_data = {}
 
         return Recipe.objects.create(
+            # ** serve para desempacotar o dicionário
             category=self.make_category(**category_data),
             author=self.make_author(**author_data),
             title=title,
