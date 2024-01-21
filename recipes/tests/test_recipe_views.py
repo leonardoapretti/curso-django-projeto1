@@ -1,6 +1,7 @@
 from django.urls import reverse, resolve
 from recipes import views
 from .test_recipe_base import RecipeTestBase
+from unittest import skip
 # pip install pytest-watch + comando ptw = serve para rodar os testes em loop. Sempre que salvar o arquivo ele atualiza o teste
 
 
@@ -9,6 +10,8 @@ class RecipeViewsTest(RecipeTestBase):
     def test_recipe_home_view_function_is_correct(self):
         view = resolve(reverse('recipes:home'))
         self.assertTrue(view.func is views.home)
+        # tenho que escrever mais algumas coisas nesse teste
+        self.fail('Para que eu termine de digitá-lo')
 
     def test_recipe_home_view_returns_status_code_200_ok(self):
         response = self.client.get(reverse('recipes:home'))
@@ -18,6 +21,7 @@ class RecipeViewsTest(RecipeTestBase):
         response = self.client.get(reverse('recipes:home'))
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
 
+    @skip('WIP')  # Work In Progress. Pode usar skip na classe inteira
     def test_recipe_home_template_shows_no_recipes_found_if_no_recipes(self):
         response = self.client.get(reverse('recipes:home'))
         self.assertIn('Nenhuma receita para mostrar',
