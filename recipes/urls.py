@@ -8,5 +8,5 @@ urlpatterns = [
     path('recipes/category/<int:category_id>/',
          views.category, name='category'),
     path('recipes/<int:id_recipe>/', views.recipe, name='recipe'),
-    path('recipes/search/', views.search, name='search'),
+    path('recipes/search/', lambda request: ..., name='search'),
 ]
