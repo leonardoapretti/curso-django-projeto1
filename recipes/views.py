@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_list_or_404, get_object_or_404
+from django.shortcuts import render, get_list_or_404, get_object_or_404, HttpResponse
 from recipes.models import Recipe
 
 
@@ -34,4 +34,4 @@ def recipe(request, id_recipe):
 
 
 def search(request):
-    ...
+    return render(request, 'recipes/pages/search.html')
