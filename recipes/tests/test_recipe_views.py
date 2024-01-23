@@ -109,3 +109,10 @@ class RecipeViewsTest(RecipeTestBase):
         response = self.client.get(
             reverse('recipes:recipe', kwargs={'id_recipe': recipe.id}))
         self.assertEqual(response.status_code, 404)
+
+    """SEARCH TESTS"""
+
+    def test_recipe_search_view_is_correct(self):
+        url = reverse('recipes:search')
+        view = resolve(url)
+        self.assertIs(view.func, views.search)
