@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_list_or_404, get_object_or_404, HttpResponse
+from django.shortcuts import render, get_list_or_404, get_object_or_404
 from recipes.models import Recipe
+from django.http import Http404
 
 
 def home(request):
@@ -34,4 +35,9 @@ def recipe(request, id_recipe):
 
 
 def search(request):
+    search_term = request.GET.get('q')
+
+    if not search_term:
+        raise Http404()
+
     return render(request, 'recipes/pages/search.html')
