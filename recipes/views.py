@@ -46,3 +46,6 @@ def search(request):
     }
 
     return render(request, 'recipes/pages/search.html', context=context)
+
+
+"""Esse é apenas um teste de commit utilizando o terminal ao invés do app"""
