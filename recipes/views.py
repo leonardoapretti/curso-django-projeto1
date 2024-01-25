@@ -44,8 +44,11 @@ def search(request):
     recipes = Recipe.objects.filter(
         # a classe Q serve para implementar consultas complexas ao DB. Documentação: https://docs.djangoproject.com/en/5.0/topics/db/queries/
         # contains é Case Sensitive, icontains não é
-        Q(title__icontains=search_term) |
-        Q(description__icontains=search_term)
+        Q(
+            Q(title__icontains=search_term) |
+            Q(description__icontains=search_term)
+        ),
+        is_published=True
     ).order_by('title')
 
     context = {
