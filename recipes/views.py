@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from recipes.models import Recipe
 from django.http import Http404
+from django.db.models import Q
 
 
 def home(request):
@@ -40,9 +41,17 @@ def search(request):
     if not search_term:
         raise Http404()
 
+    recipes = Recipe.objects.filter(
+        # a classe Q serve para implementar consultas complexas ao DB. Documentação: https://docs.djangoproject.com/en/5.0/topics/db/queries/
+        # contains é Case Sensitive, icontains não é
+        Q(title__icontains=search_term) |
+        Q(description__icontains=search_term)
+    ).order_by('title')
+
     context = {
         'title': f'Search for "{search_term}"',
         'search_term': search_term,
+        'recipes': recipes,
     }
 
     return render(request, 'recipes/pages/search.html', context=context)
