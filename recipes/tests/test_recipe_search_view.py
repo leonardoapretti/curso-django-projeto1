@@ -30,3 +30,64 @@ class RecipeSearchViewTest(RecipeTestBase):
         response = self.client.get(reverse('recipes:search') + '?q=Teste')
         self.assertIn('Search for &quot;Teste&quot;',
                       response.content.decode('utf-8'))
+
+    def test_recipe_search_can_find_recipe_by_title(self):
+        title1 = 'This is recipe one'
+        title2 = 'This is recipe two'
+
+        recipe1 = self.make_recipe(
+            slug='one', title=title1, author_data={'username': 'one'}
+        )
+
+        recipe2 = self.make_recipe(
+            slug='two', title=title2, author_data={'username': 'two'}
+        )
+
+        search_url = reverse('recipes:search')
+        response1 = self.client.get(f'{search_url}?q={title1}')
+        response2 = self.client.get(f'{search_url}?q={title2}')
+        response_both = self.client.get(f'{search_url}?q=this')
+
+        """IMPORTANTE - o atributo context da response é responsável por buscar os models criados pelo teste na base de dados provisória"""
+        context1 = response1.context['recipes']
+        context2 = response2.context['recipes']
+        context_both = response_both.context['recipes']
+
+        """A receita um deve estar no contexto 1"""
+        self.assertIn(recipe1, context1)
+        """A receita 2 não deve estar no contexto 1"""
+        self.assertNotIn(recipe2, context1)
+
+        """A receita dois deve estar no contexto 2"""
+        self.assertIn(recipe2, context2)
+        """A receita 1 não deve estar no contexto 2"""
+        self.assertNotIn(recipe1, context2)
+
+        self.assertIn(recipe1, context_both)
+        self.assertIn(recipe2, context_both)
+
+    def test_recipe_search_can_find_recipe_by_description(self):
+        description1 = 'This is description one'
+        description2 = 'This is description two'
+
+        recipe1 = self.make_recipe(
+            slug='d1', description=description1, author_data={'username': 'one'}, title='Recipe 1'
+        )
+
+        recipe2 = self.make_recipe(
+            slug='d2', description=description2, author_data={'username': 'two'}, title='Recipe 2'
+        )
+
+        search_url = reverse('recipes:search')
+        response1 = self.client.get(f'{search_url}?q={description1}')
+        response2 = self.client.get(f'{search_url}?q={description2}')
+        response_both = self.client.get(f'{search_url}?q=this')
+
+        self.assertIn(recipe1, response1.context['recipes'])
+        self.assertNotIn(recipe2, response1.context['recipes'])
+
+        self.assertIn(recipe2, response2.context['recipes'])
+        self.assertNotIn(recipe1, response2.context['recipes'])
+
+        self.assertIn(recipe1, response_both.context['recipes'])
+        self.assertIn(recipe2, response_both.context['recipes'])
