@@ -1,4 +1,16 @@
-def make_pagination_range(page_range=list(range(1, 21)), qty_paginas=4, current_page=1):
-    if (current_page < 4):
-        return list(range(1, 10))
-    return [1, 2, 3, 4]
+import math
+
+
+def make_pagination_range(page_range, qty_pages, current_page,):
+
+    middle_range = math.ceil(qty_pages / 2)
+    start_range = current_page - middle_range
+    stop_range = current_page + middle_range
+
+    start_range_offset = abs(start_range)
+
+    stop_range += start_range_offset if start_range < 0 else 0
+
+    if start_range < 0:
+        start_range = 0
+    return page_range[start_range:stop_range]
