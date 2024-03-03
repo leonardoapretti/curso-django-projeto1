@@ -4,9 +4,7 @@ import math
 def make_pagination_range(page_range, qty_pages, current_page,):
 
     middle_range = math.ceil(qty_pages / 2)
-    # 17
     start_range = current_page - middle_range
-    # 21
     stop_range = current_page + middle_range
     total_pages = len(page_range)
 

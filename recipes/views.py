@@ -3,17 +3,28 @@ from django.core.paginator import Paginator
 from recipes.models import Recipe
 from django.http import Http404
 from django.db.models import Q
+from utils.pagination import make_pagination_range
 
 
 def home(request):
     recipes = Recipe.objects.filter(is_published=True).order_by('created_at')
 
-    current_page = request.GET.get('page', 1)
+    try:
+        current_page = int(request.GET.get('page', 1))
+    except:
+        current_page = 1
+
     paginator = Paginator(recipes, 9)
     page_obj = paginator.get_page(current_page)
 
+    pagination_range = make_pagination_range(
+        page_range=paginator.page_range,
+        qty_pages=4,
+        current_page=current_page
+    )
     context = {
         'recipes': page_obj,
+        'pagination_range': pagination_range,
     }
     return render(request, 'recipes/pages/home.html', context=context)
 
