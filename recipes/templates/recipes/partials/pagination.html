@@ -6,7 +6,11 @@
         {% endif %}
 
         {% for page in pagination_range.pagination %}
+        {% if pagination_range.current_page == page %}
+            <a href="?page={{page}}" class="page-link page-item current-page">{{page}}</a>
+        {% else %}
             <a href="?page={{page}}" class="page-link page-item">{{page}}</a>
+        {% endif %}
         {% endfor %}
 
         {% if pagination_range.last_page_out_of_range %} 
