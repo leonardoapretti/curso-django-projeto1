@@ -3,14 +3,15 @@ from recipes.models import Recipe
 from django.http import Http404
 from django.db.models import Q
 from utils.pagination import make_pagination
+import os
 
-PER_PAGES = 9
+PER_PAGE = os.environ.get('PER_PAGE', 6)
 
 
 def home(request):
     recipes = Recipe.objects.filter(is_published=True).order_by('created_at')
 
-    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGES)
+    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
 
     context = {
         'recipes': page_obj,
@@ -23,7 +24,7 @@ def category(request, category_id):
     recipes = get_list_or_404(Recipe.objects.filter(
         category__id=category_id, is_published=True).order_by('-id'))
 
-    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGES)
+    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
 
     context = {
         'recipes': page_obj,
@@ -61,7 +62,7 @@ def search(request):
         is_published=True
     ).order_by('title')
 
-    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGES)
+    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
 
     context = {
         'title': f'Search for "{search_term}"',
