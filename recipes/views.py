@@ -19,12 +19,6 @@ def home(request):
         'pagination_range': pagination_range,
     }
 
-    messages.success(request, 'Que legal, funcionou!')
-    messages.error(request, 'Poxa, não funcionou!')
-    messages.info(request, 'Informação!')
-    messages.warning(
-        request, 'Atenção, tem certeza que deseja realizar a ação?')
-
     return render(request, 'recipes/pages/home.html', context=context)
 
 
