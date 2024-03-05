@@ -1,7 +1,9 @@
 from django.urls import reverse, resolve
 from recipes import views
+from unittest.mock import patch
 from .test_recipe_base import RecipeTestBase
-from unittest import skip
+import os
+import math
 # pip install pytest-watch + comando ptw = serve para rodar os testes em loop. Sempre que salvar o arquivo ele atualiza o teste
 
 
@@ -45,3 +47,20 @@ class RecipeHomeViewTest(RecipeTestBase):
         response = self.client.get(reverse('recipes:home'))
         self.assertIn('Nenhuma receita para mostrar',
                       response.content.decode('utf-8'))
+
+    @patch('recipes.views.PER_PAGE', new=3)
+    def test_recipe_home_view_is_paginated(self):
+
+        range_recipes = range(1, 19)
+        for i in range_recipes:
+            kwargs = {'slug': f's{i}', 'author_data': {
+                'username': f'u{i}'}, 'title': f'Título {i}'}
+            self.make_recipe(**kwargs)
+
+        response = self.client.get(reverse('recipes:home'))
+        recipes = response.context['recipes']
+        paginator = recipes.paginator
+        self.assertEqual(paginator.num_pages, len(
+            range_recipes) / math.ceil(int(os.environ.get('PER_PAGE'))))
+
+        ...
