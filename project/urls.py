@@ -23,7 +23,8 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     # inclui as urls específicas do app para deixar o código melhor
-    path('', include('recipes.urls'))
+    path('', include('recipes.urls')),
+    path('authors/', include('authors.urls'))
 ]
 
 # serve para o django compreender que deve servir os arquivos que estão nessa pasta quando forem solicitados

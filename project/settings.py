@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     # APPS CRIADOS PELA GENTE
     'recipes',
+    'authors',
 ]
 
 MIDDLEWARE = [
