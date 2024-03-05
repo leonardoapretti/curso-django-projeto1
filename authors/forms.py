@@ -1,3 +1,4 @@
+from typing import Any
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -101,3 +102,24 @@ class RegisterForm(forms.ModelForm):
                 params={'value': 'John Doe'}
             )
         return data
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password2 = cleaned_data.get('password2')
+
+        if password != password2:
+            password_confirmation_error = ValidationError(
+                'Passwords must be equal',
+                code='invalid'
+            )
+
+            raise ValidationError({
+                'password': password_confirmation_error,
+                'password2': [
+                    password_confirmation_error,
+                    'Another error'
+                ],
+
+            })
+        return cleaned_data
