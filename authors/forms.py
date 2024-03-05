@@ -2,7 +2,47 @@ from django import forms
 from django.contrib.auth.models import User
 
 
+def add_attr(field, attr_name, attr_new_val):
+    existing_attr = field.widget.attrs.get(attr_name, '')
+    field.widget.attrs[attr_name] = f'{existing_attr} {attr_new_val}'.strip()
+
+
+def add_placeholder(field, placeholder_val):
+    field.widget.attrs['placeholder'] = placeholder_val
+
+
 class RegisterForm(forms.ModelForm):
+    # aqui nós não sobrescrevemos e sim adicionamos os campos diretamente nos elementos do form
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        add_placeholder(self.fields['username'], 'Your username')
+        add_placeholder(self.fields['email'], 'Your e-mail')
+        add_placeholder(self.fields['first_name'], 'Ex: John')
+        add_placeholder(self.fields['last_name'], 'Ex: Smith')
+
+    # essa é uma forma de sobrescrever os atributos dos elementos do form. é recomendado fazer assim do que fazer na class Meta
+    password = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Type your password here'
+        }),
+        error_messages={
+            'required': 'Password must not be empty'
+        },
+        help_text=(
+            'Password must have at least one upper case letter, '
+            'one lowercase letter and one number.'
+        )
+    )
+    password2 = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'repeat your password'
+        }),
+        label='Repeat your password'
+    )
+
+    # essa é outra forma de sobrescrever os elementos do form
     class Meta:
         model = User
         fields = [
@@ -14,14 +54,14 @@ class RegisterForm(forms.ModelForm):
         ]
         # exclude = ['first_name'] # ao invés de passar os fields pode apenas excluir os que não deseja
         labels = {
-            'username': 'Digite seu usuário',
-            'first_name': 'Nome',
-            'last_name': 'Sobrenome',
-            'email': 'Digite seu email',
-            'password': 'Digite sua senha',
+            'username': 'Type your username',
+            'first_name': 'First Name',
+            'last_name': 'Last Name',
+            'email': 'Type your email here',
+            'password': 'Type your password here',
         }
         help_texts = {
-            'email': 'Digite um email válido'
+            'email': 'Enter a valid email'
         }
         error_messages = {
             'username': {
@@ -31,12 +71,9 @@ class RegisterForm(forms.ModelForm):
         }
         widgets = {
             'first_name': forms.TextInput(attrs={
-                'placeholder': 'Digite seu nome aqui'
+                'placeholder': 'Type your first name here'
             }),
             'last_name': forms.TextInput(attrs={
-                'placeholder': 'Digite seu sobrenome aqui'
+                'placeholder': 'Type your last name here'
             }),
-            'password': forms.PasswordInput(attrs={
-                'placeholder': 'Digite sua senha aqui'
-            })
         }
