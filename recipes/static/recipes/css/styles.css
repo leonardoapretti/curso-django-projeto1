@@ -307,6 +307,12 @@ h6 {
     padding: 0 2rem;
 }
 /* Messages */
+.messages-container{
+    display: flex;
+    flex-flow: column nowrap;
+    gap: calc(var(--spacing-gutter-small)/3);
+}
+
 .message {
     padding: 1rem;
     border-radius: 4px;
@@ -382,4 +388,10 @@ h6 {
     text-decoration: none;
     background: var(--color-primary-hover);
     color: var(--color-white);
+}
+
+@media (max-width: 600px){
+    .main-content-list{
+        grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+    }
 }

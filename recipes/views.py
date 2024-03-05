@@ -21,6 +21,7 @@ def home(request):
 
     messages.success(request, 'Que legal, funcionou!')
     messages.error(request, 'Poxa, não funcionou!')
+    messages.info(request, 'Informação!')
     messages.warning(
         request, 'Atenção, tem certeza que deseja realizar a ação?')
 
