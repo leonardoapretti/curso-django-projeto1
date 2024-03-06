@@ -23,6 +23,8 @@ class AuthorRegisterFormUnitTest(TestCase):
         self.assertEqual(placeholder, current_placeholder)
 
     @parameterized.expand([
+        ('username', 'Username must have letters, numbers or one of those @ . + - _'
+         'The length should be between 4 and 150 characters.'),
         ('email', 'Enter a valid email'),
         ('password', 'Password must have at least one upper case letter, '
          'one lowercase letter and one number.'),
@@ -53,6 +55,14 @@ class AuthorRegisterFormUnitTest(TestCase):
         current = self.form[field].field.label
         self.assertEqual(needed, current)
 
+    def test_email_field_is_email_field(self):
+        current = self.form['email'].widget_type
+        self.assertEqual('email', current)
+
+    def test_email_field_input_is_email_input(self):
+        current = self.form['email'].field.widget.input_type
+        self.assertEqual('email', current)
+
     @parameterized.expand([
         'password',
         'password2',
@@ -80,6 +90,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
             'password': 'Str0ngP@ssword1',
             'password2': 'Str0ngP@ssword2',
         }
+        self.url = reverse('authors:create')
 
         return super().setUp(*args, **kwargs)
 
@@ -93,9 +104,23 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
     ])
     def test_fields_cannot_be_empty(self, field, msg):
         self.form_data[field] = ''
-        url = reverse('authors:create')
         # follow=True serve para o teste continuar o fluxo com o redirect
-        response = self.client.post(url, data=self.form_data, follow=True)
+        response = self.client.post(self.url, data=self.form_data, follow=True)
         self.assertIn(msg, response.content.decode('utf-8'))
         self.assertIn(msg, response.context['form'].errors.get(field))
-        ...
+
+    def test_username_min_length_should_be_4(self):
+        self.form_data['username'] = 'abc'
+        response = self.client.post(self.url, data=self.form_data, follow=True)
+        expected_error_message = 'Username must have at least 4 characters.'
+        self.assertIn(expected_error_message, response.content.decode('utf-8'))
+        self.assertIn(expected_error_message,
+                      response.context['form'].errors.get('username'))
+
+    def test_username_max_length_should_be_150(self):
+        self.form_data['username'] = 'a' * 151
+        response = self.client.post(self.url, data=self.form_data, follow=True)
+        expected_error_message = 'Username must not be more than 150 characters.'
+        self.assertIn(expected_error_message, response.content.decode('utf-8'))
+        self.assertIn(expected_error_message,
+                      response.context['form'].errors.get('username'))

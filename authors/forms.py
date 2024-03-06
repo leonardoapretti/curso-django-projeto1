@@ -39,9 +39,17 @@ class RegisterForm(forms.ModelForm):
     # essa é uma forma de sobrescrever os atributos dos elementos do form. é recomendado fazer assim do que fazer na class Meta
     username = forms.CharField(
         label='Type your username',
+        help_text=(
+            'Username must have letters, numbers or one of those @ . + - _'
+            'The length should be between 4 and 150 characters.'
+        ),
         error_messages={
             'required': 'This field must not be empty',
+            'min_length': 'Username must have at least 4 characters.',
+            'max_length': 'Username must not be more than 150 characters.'
         },
+        min_length=4,
+        max_length=150,
     )
     first_name = forms.CharField(
         label='First Name',
