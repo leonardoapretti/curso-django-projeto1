@@ -78,7 +78,7 @@ class RegisterForm(forms.ModelForm):
         }
         error_messages = {
             'username': {
-                'required': 'Esse campo é obrigatório, preencha novamente.',
+                'required': 'This field must not be empty',
                 'max_length': 'Este campo deve ter menos de x caracteres.'
             }
         }

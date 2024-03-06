@@ -1,10 +1,12 @@
 from authors.forms import RegisterForm
 from unittest import TestCase
+from django.test import TestCase as DjangoTestCase
 from parameterized import parameterized
+from django.urls import reverse
 
 
 class AuthorRegisterFormUnitTest(TestCase):
-    def setUp(self) -> None:
+    def setUp(self):
         self.form = RegisterForm()
         return super().setUp()
 
@@ -67,3 +69,29 @@ class AuthorRegisterFormUnitTest(TestCase):
     def test_password_fields_are_required(self, field):
         password_is_required = self.form[field].field.required
         self.assertEqual(password_is_required, True)
+
+
+class AuthorRegisterFormIntegrationTest(DjangoTestCase):
+    def setUp(self, *args, **kwargs):
+        self.form_data = {
+            'username': 'user',
+            'first_name': 'first',
+            'last_name': 'last',
+            'email': 'email@email.com',
+            'password': 'Str0ngP@ssword1',
+            'password2': 'Str0ngP@ssword2',
+        }
+
+        return super().setUp(*args, **kwargs)
+
+    @parameterized.expand([
+        ('username', 'This field must not be empty'),
+    ])
+    def test_fields_cannot_be_empty(self, field):
+        self.form_data[field] = ''
+        msg = 'This field must not be empty'
+        url = reverse('authors:create')
+        # follow=True serve para o teste continuar o fluxo com o redirect
+        response = self.client.post(url, data=self.form_data, follow=True)
+        self.assertIn(msg, response.content.decode('utf-8'))
+        ...
