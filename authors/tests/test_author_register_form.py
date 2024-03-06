@@ -124,3 +124,41 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         self.assertIn(expected_error_message, response.content.decode('utf-8'))
         self.assertIn(expected_error_message,
                       response.context['form'].errors.get('username'))
+
+    def test_password_field_has_upper_lower_case_letters_and_numbers(self):
+        self.form_data['password'] = 'abc123'
+        response = self.client.post(self.url, data=self.form_data, follow=True)
+        expected_error_message = (
+            'Password must have at least one uppercase letter, '
+            'one lowercase letter and one number. The length should be '
+            'at least 8 characters.'
+        )
+        self.assertIn(expected_error_message, response.content.decode('utf-8'))
+        self.assertIn(expected_error_message,
+                      response.context['form'].errors.get('password'))
+
+        self.form_data['password'] = '@Abc1234'
+        response = self.client.post(self.url, data=self.form_data, follow=True)
+        self.assertNotIn(expected_error_message,
+                         response.context['form'].errors.get('password'))
+
+    def test_valid_password_fields_are_equal(self):
+        self.form_data['password'] = '@Bcd1234'
+        self.form_data['password2'] = '@Bcd12345'
+        response = self.client.post(self.url, data=self.form_data, follow=True)
+
+        expected_error_message = 'Passwords must be equal'
+        self.assertIn(expected_error_message,
+                      response.context['form'].errors.get('password'))
+        self.assertIn(expected_error_message,
+                      response.context['form'].errors.get('password2'))
+        self.assertIn(expected_error_message, response.content.decode('utf-8'))
+
+        self.form_data['password'] = '@Bcd1234'
+        self.form_data['password2'] = '@Bcd1234'
+        response = self.client.post(self.url, data=self.form_data, follow=True)
+
+        self.assertNotIn(expected_error_message,
+                         response.content.decode('utf-8'))
+        self.assertIsNone(response.context['form'].errors.get('password'))
+        self.assertIsNone(response.context['form'].errors.get('password2'))

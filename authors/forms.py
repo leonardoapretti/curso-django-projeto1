@@ -108,9 +108,6 @@ class RegisterForm(forms.ModelForm):
 
             raise ValidationError({
                 'password': password_confirmation_error,
-                'password2': [
-                    password_confirmation_error,
-                    'Another error'
-                ],
+                'password2': password_confirmation_error,
             })
         return cleaned_data
