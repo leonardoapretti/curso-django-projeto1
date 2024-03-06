@@ -6,7 +6,7 @@
   <div class="main-content center container">
     <h2>Register</h2>
   </div>
-
+  {% include "global/messages.html" %}
   <div class="main-content container">
     <form action="{% url 'authors:create' %}" method="POST">
       {% csrf_token %}

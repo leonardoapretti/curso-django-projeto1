@@ -30,17 +30,16 @@ class RegisterForm(forms.ModelForm):
     # aqui nós não sobrescrevemos e sim adicionamos os campos diretamente nos elementos do form
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        add_placeholder(self.fields['username'], 'Your username')
-        add_placeholder(self.fields['email'], 'Your e-mail')
         add_placeholder(self.fields['first_name'], 'Ex: John')
         add_placeholder(self.fields['last_name'], 'Ex: Smith')
-
+        add_placeholder(self.fields['email'], 'Your e-mail')
+        add_placeholder(self.fields['username'], 'Your username')
+        add_placeholder(self.fields['password'], 'Type your password')
+        add_placeholder(self.fields['password2'], 'Repeat your password')
     # essa é uma forma de sobrescrever os atributos dos elementos do form. é recomendado fazer assim do que fazer na class Meta
     password = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Type your password here'
-        }),
+        widget=forms.PasswordInput(),
         error_messages={
             'required': 'Password must not be empty'
         },
@@ -52,9 +51,7 @@ class RegisterForm(forms.ModelForm):
     )
     password2 = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'repeat your password'
-        }),
+        widget=forms.PasswordInput(),
         label='Repeat your password'
     )
 
@@ -84,14 +81,6 @@ class RegisterForm(forms.ModelForm):
                 'required': 'Esse campo é obrigatório, preencha novamente.',
                 'max_length': 'Este campo deve ter menos de x caracteres.'
             }
-        }
-        widgets = {
-            'first_name': forms.TextInput(attrs={
-                'placeholder': 'Type your first name here'
-            }),
-            'last_name': forms.TextInput(attrs={
-                'placeholder': 'Type your last name here'
-            }),
         }
 
     # validação utilizando o método clean_field_name(self)
