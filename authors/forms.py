@@ -40,6 +40,7 @@ class RegisterForm(forms.ModelForm):
     password = forms.CharField(
         required=True,
         widget=forms.PasswordInput(),
+        label='Password',
         error_messages={
             'required': 'Password must not be empty'
         },
@@ -52,7 +53,7 @@ class RegisterForm(forms.ModelForm):
     password2 = forms.CharField(
         required=True,
         widget=forms.PasswordInput(),
-        label='Repeat your password'
+        label='Repeat your password',
     )
 
     # essa é outra forma de sobrescrever os elementos do form
@@ -67,11 +68,10 @@ class RegisterForm(forms.ModelForm):
         ]
         # exclude = ['first_name'] # ao invés de passar os fields pode apenas excluir os que não deseja
         labels = {
-            'username': 'Type your username',
             'first_name': 'First Name',
             'last_name': 'Last Name',
             'email': 'Type your email here',
-            'password': 'Type your password here',
+            'username': 'Type your username',
         }
         help_texts = {
             'email': 'Enter a valid email'
@@ -82,29 +82,6 @@ class RegisterForm(forms.ModelForm):
                 'max_length': 'Este campo deve ter menos de x caracteres.'
             }
         }
-
-    # validação utilizando o método clean_field_name(self)
-    def clean_password(self):
-        data = self.cleaned_data.get('password')
-
-        if 'atenção' in data:
-            raise ValidationError(
-                'Não digite %(value)s no campo password',
-                code='invalid',
-                params={'value': 'atenção'}
-            )
-        return data
-
-    def clean_first_name(self):
-        data = self.cleaned_data.get('first_name')
-
-        if 'John Doe' in data:
-            raise ValidationError(
-                'Não digite %(value)s no campo first name',
-                code='invalid',
-                params={'value': 'John Doe'}
-            )
-        return data
 
     def clean(self):
         cleaned_data = super().clean()
@@ -123,6 +100,5 @@ class RegisterForm(forms.ModelForm):
                     password_confirmation_error,
                     'Another error'
                 ],
-
             })
         return cleaned_data
