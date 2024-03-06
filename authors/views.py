@@ -24,7 +24,10 @@ def register_create(request):
 
     if form.is_valid():
         # commit=False -> serve para não salvar o form na base de dados de imediato
-        form.save()
+        # salvando a senha da maneira correta
+        user = form.save(commit=False)
+        user.set_password(user.password)
+        user.save()
         # data.outro_campo -> serve para adcionar campos ao formulário
         # manda mensagem de sucesso para o usuário
         messages.success(request, 'Your user is created, please log in')
