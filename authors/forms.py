@@ -37,10 +37,29 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields['password'], 'Type your password')
         add_placeholder(self.fields['password2'], 'Repeat your password')
     # essa é uma forma de sobrescrever os atributos dos elementos do form. é recomendado fazer assim do que fazer na class Meta
+    username = forms.CharField(
+        label='Type your username',
+        error_messages={
+            'required': 'This field must not be empty',
+        },
+    )
+    first_name = forms.CharField(
+        label='First Name',
+        error_messages={'required': 'Write your first name'},
+    )
+    last_name = forms.CharField(
+        label='Last Name',
+        error_messages={'required': 'Write your last name'},
+    )
+    email = forms.EmailField(
+        label='Type your email here',
+        widget=forms.EmailInput(),
+        help_text='Enter a valid email',
+        error_messages={'required': 'E-mail must not be empty'},
+    )
     password = forms.CharField(
-        required=True,
-        widget=forms.PasswordInput(),
         label='Password',
+        widget=forms.PasswordInput(),
         error_messages={
             'required': 'Password must not be empty'
         },
@@ -48,15 +67,16 @@ class RegisterForm(forms.ModelForm):
             'Password must have at least one upper case letter, '
             'one lowercase letter and one number.'
         ),
-        validators=[strong_password]
+        validators=[strong_password],
     )
     password2 = forms.CharField(
-        required=True,
+        label='Confirm your password',
         widget=forms.PasswordInput(),
-        label='Repeat your password',
+        error_messages={
+            'required': 'Confirm your password must not be empty'
+        },
     )
 
-    # essa é outra forma de sobrescrever os elementos do form
     class Meta:
         model = User
         fields = [
@@ -66,22 +86,6 @@ class RegisterForm(forms.ModelForm):
             'email',
             'password'
         ]
-        # exclude = ['first_name'] # ao invés de passar os fields pode apenas excluir os que não deseja
-        labels = {
-            'first_name': 'First Name',
-            'last_name': 'Last Name',
-            'email': 'Type your email here',
-            'username': 'Type your username',
-        }
-        help_texts = {
-            'email': 'Enter a valid email'
-        }
-        error_messages = {
-            'username': {
-                'required': 'This field must not be empty',
-                'max_length': 'Este campo deve ter menos de x caracteres.'
-            }
-        }
 
     def clean(self):
         cleaned_data = super().clean()

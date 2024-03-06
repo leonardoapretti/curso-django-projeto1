@@ -11,10 +11,10 @@ class AuthorRegisterFormUnitTest(TestCase):
         return super().setUp()
 
     @parameterized.expand([
+        ('username', 'Your username'),
         ('first_name', 'Ex: John'),
         ('last_name', 'Ex: Smith'),
         ('email', 'Your e-mail'),
-        ('username', 'Your username'),
         ('password', 'Type your password'),
         ('password2', 'Repeat your password'),
     ])
@@ -33,8 +33,7 @@ class AuthorRegisterFormUnitTest(TestCase):
 
     @parameterized.expand([
         ('password', 'required', 'Password must not be empty'),
-        ('username', 'required', 'Esse campo é obrigatório, preencha novamente.'),
-        ('username', 'max_length', 'Este campo deve ter menos de x caracteres.'),
+        ('username', 'required', 'This field must not be empty'),
 
     ])
     def test_fields_error_messages(self, field, error_message, needed):
@@ -43,12 +42,12 @@ class AuthorRegisterFormUnitTest(TestCase):
             needed, current)
 
     @parameterized.expand([
+        ('username', 'Type your username'),
         ('first_name', 'First Name'),
         ('last_name', 'Last Name'),
         ('email', 'Type your email here'),
-        ('username', 'Type your username'),
         ('password', 'Password'),
-        ('password2', 'Repeat your password'),
+        ('password2', 'Confirm your password'),
     ])
     def test_fields_labels(self, field, needed):
         current = self.form[field].field.label
@@ -86,12 +85,17 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
 
     @parameterized.expand([
         ('username', 'This field must not be empty'),
+        ('first_name', 'Write your first name'),
+        ('last_name', 'Write your last name'),
+        ('email', 'E-mail must not be empty'),
+        ('password', 'Password must not be empty'),
+        ('password2', 'Confirm your password must not be empty'),
     ])
-    def test_fields_cannot_be_empty(self, field):
+    def test_fields_cannot_be_empty(self, field, msg):
         self.form_data[field] = ''
-        msg = 'This field must not be empty'
         url = reverse('authors:create')
         # follow=True serve para o teste continuar o fluxo com o redirect
         response = self.client.post(url, data=self.form_data, follow=True)
         self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get(field))
         ...
