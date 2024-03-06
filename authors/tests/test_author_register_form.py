@@ -90,7 +90,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
             'password': 'Str0ngP@ssword1',
             'password2': 'Str0ngP@ssword1',
         }
-        self.url = reverse('authors:create')
+        self.url = reverse('authors:register_create')
 
         return super().setUp(*args, **kwargs)
 
