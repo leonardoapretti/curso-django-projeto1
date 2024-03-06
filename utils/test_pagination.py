@@ -1,6 +1,8 @@
 from unittest import TestCase
-
+from recipes.tests.test_recipe_base import RecipeTestBase
 from utils.pagination import make_pagination_range
+from django.urls import reverse
+from unittest.mock import patch
 
 
 class PaginationTest(TestCase):
@@ -102,6 +104,20 @@ class PaginationTest(TestCase):
             current_page=21,
         )['pagination']
         self.assertEqual([17, 18, 19, 20], pagination)
+
+
+class IntegrationPaginationTest(RecipeTestBase):
+    def test_make_pagination_current_page_is_one_if_not_page_attr_in_request(self):
+        for i in range(1, 6):
+            kwargs = {
+                'slug': f's-{i}', 'author_data': {'username': f'user{i}'}, 'title': f'title {i}'}
+            self.make_recipe(**kwargs)
+        url = reverse('recipes:home')
+
+        with patch('recipes.views.PER_PAGE', new=3):
+            response = self.client.get(f'{url}?page=1a').context['recipes']
+            self.assertEqual(1, response.number)
+
 
 # TODO: DA FORMA ABAIXO ERA COMO EU TINHA FEITO. ESTÁ FUNCIONANDO DE MANEIRA MAIS DINÂMICA, CONTUDO, TA MAIS DEMORADO
 # from unittest import TestCase

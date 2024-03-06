@@ -16,7 +16,7 @@ def register_view(request):
 
 def register_create(request):
     if not request.POST:
-        raise Http404()
+        raise Http404
 
     POST = request.POST
     request.session['register_form_data'] = POST
