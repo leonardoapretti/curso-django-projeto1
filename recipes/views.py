@@ -10,7 +10,7 @@ PER_PAGE = os.environ.get('PER_PAGE', 6)
 
 def home(request):
     recipes = Recipe.objects.filter(is_published=True).order_by('created_at')
-
+    Recipe.objects.filter()
     page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
 
     context = {
@@ -70,7 +70,7 @@ def search(request):
         'search_term': search_term,
         'recipes': page_obj,
         'pagination_range': pagination_range,
-        'additional_url_query': f'&q={search_term}'
+        'additional_url_query': f'&q={search_term}',
     }
 
     return render(request, 'recipes/pages/search.html', context=context)

@@ -13,6 +13,7 @@ class PaginationTest(TestCase):
             current_page=1,
         )['pagination']
         self.assertEqual([1, 2, 3, 4], pagination)
+        ...
 
     def test_first_range_is_static_if_current_page_is_less_than_middle_page(self):  # noqa: E501
         # Current page = 1 - Qty Page = 2 - Middle Page = 2
