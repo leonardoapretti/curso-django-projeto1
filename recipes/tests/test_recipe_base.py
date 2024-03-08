@@ -1,21 +1,22 @@
 from django.test import TestCase
 from recipes.models import Category, Recipe, User
 
+# A classe mixin: serve como um pacote de métodos que podem ser herdados por diversas outras classes
+# isso permite que uma classe herde de outra classe, bem como adicione os métodos da classe mixin
+# essa classe mixin poderia nem estar aqui, talvez deixaria em utils
 
-class RecipeTestBase(TestCase):
-    def setUp(self) -> None:
-        return super().setUp()
 
+class RecipeMixin:
     def make_category(self, name='Category'):
         return Category.objects.create(name=name)
 
     def make_author(
-            self,
-            first_name='user',
-            last_name='name',
-            username='username',
-            password='123456',
-            email='username@email.com',
+        self,
+        first_name='user',
+        last_name='name',
+        username='username',
+        password='123456',
+        email='username@email.com',
     ):
         return User.objects.create_user(
             first_name=first_name,
@@ -26,20 +27,19 @@ class RecipeTestBase(TestCase):
         )
 
     def make_recipe(
-            self,
-            category_data=None,
-            author_data=None,
-            title='Recipe Title',
-            description='Recipe Description',
-            slug='recipe-slug',
-            preparation_time=10,
-            preparation_time_unit='Minutos',
-            servings=5,
-            servings_unit='Porções',
-            preparation_steps='Recipe Preparation Steps',
-            preparation_steps_is_html=False,
-            is_published=True,
-
+        self,
+        category_data=None,
+        author_data=None,
+        title='Recipe Title',
+        description='Recipe Description',
+        slug='recipe-slug',
+        preparation_time=10,
+        preparation_time_unit='Minutos',
+        servings=5,
+        servings_unit='Porções',
+        preparation_steps='Recipe Preparation Steps',
+        preparation_steps_is_html=False,
+        is_published=True,
     ):
         if category_data is None:
             category_data = {}
@@ -48,7 +48,6 @@ class RecipeTestBase(TestCase):
             author_data = {}
 
         return Recipe.objects.create(
-            # ** serve para desempacotar o dicionário
             category=self.make_category(**category_data),
             author=self.make_author(**author_data),
             title=title,
@@ -62,3 +61,8 @@ class RecipeTestBase(TestCase):
             preparation_steps_is_html=preparation_steps_is_html,
             is_published=is_published,
         )
+
+
+class RecipeTestBase(TestCase, RecipeMixin):
+    def setUp(self) -> None:
+        return super().setUp()
