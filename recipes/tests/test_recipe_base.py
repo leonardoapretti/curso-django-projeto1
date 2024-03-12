@@ -1,6 +1,6 @@
 from django.test import TestCase
 from recipes.models import Category, Recipe, User
-
+import pytest
 # A classe mixin: serve como um pacote de métodos que podem ser herdados por diversas outras classes
 # isso permite que uma classe herde de outra classe, bem como adicione os métodos da classe mixin
 # essa classe mixin poderia nem estar aqui, talvez deixaria em utils
