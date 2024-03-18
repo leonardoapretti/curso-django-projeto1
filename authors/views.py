@@ -6,6 +6,10 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from recipes.models import Recipe
+from utils.pagination import make_pagination
+import os
+
+PER_PAGE = os.environ.get('PER_PAGE', 6)
 
 
 def register_view(request):
@@ -98,8 +102,11 @@ def dashboard(request):
         author=request.user,
     )
 
+    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
+
     context = {
-        'recipes': recipes,
+        'recipes': page_obj,
+        'pagination_range': pagination_range,
     }
 
     return render(request, 'authors/pages/dashboard.html', context)
