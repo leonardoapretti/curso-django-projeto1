@@ -66,3 +66,8 @@ class RecipeMixin:
 class RecipeTestBase(TestCase, RecipeMixin):
     def setUp(self) -> None:
         return super().setUp()
+
+
+class TestRecipeMixin(TestCase, RecipeMixin):
+    def test_category_data_is_not_none(self):
+        self.make_recipe(category_data={'name': 'Teste'})

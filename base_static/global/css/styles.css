@@ -417,7 +417,12 @@
     background: var(--color-debug-light);
     color: var(--color-debug-dark);
   }
+
+  /* Authors*/
   
+  .login-message{
+    margin: var(--spacing-gutter-small) 0;
+  }
   /* Generics */
   
   .center {
