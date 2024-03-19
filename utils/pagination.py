@@ -8,11 +8,7 @@ from django.core.paginator import Paginator
 # s.punctuation, k=64)))"
 
 
-def make_pagination_range(
-    page_range,
-    qty_pages,
-    current_page,
-):
+def make_pagination_range(page_range, qty_pages, current_page):
     middle_range = math.ceil(qty_pages / 2)
     start_range = current_page - middle_range
     stop_range = current_page + middle_range
