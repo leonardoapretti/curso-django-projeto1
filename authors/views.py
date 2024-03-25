@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from recipes.models import Recipe
 from utils.pagination import make_pagination
+from django.utils.text import slugify
 import os
 
 PER_PAGE = os.environ.get('PER_PAGE', 6)
@@ -100,7 +101,7 @@ def dashboard(request):
     recipes = Recipe.objects.filter(
         is_published=False,
         author=request.user,
-    )
+    ).order_by('-created_at')
 
     page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
 
@@ -125,12 +126,52 @@ def dashboard_recipe_edit(request, id):
 
     form = AuthorRecipeForm(
         request.POST or None,
+        files=request.FILES or None,
         instance=recipe,
     )
+
+    if form.is_valid():
+        recipe = form.save(commit=False)
+
+        recipe.author = request.user
+        recipe.preparation_steps_is_html = False
+        recipe.is_published = False
+
+        recipe.save()
+
+        messages.success(request, 'Sua receita foi salva com sucesso!')
+        return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
 
     context = {
         'recipe': recipe,
         'form': form,
+    }
+
+    return render(request, 'authors/pages/dashboard_recipe.html', context)
+
+
+@login_required(login_url='authors:login', redirect_field_name='next')
+def dashboard_recipe_create(request):
+    form = AuthorRecipeForm(
+        request.POST or None,
+        files=request.FILES or None,
+    )
+
+    if form.is_valid():
+        recipe = form.save(commit=False)
+
+        recipe.author = request.user
+        recipe.preparation_steps_is_html = False
+        recipe.is_published = False
+
+        recipe.save()
+
+        messages.success(request, 'Sua receita foi salva com sucesso!')
+        return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
+
+    context = {
+        'form': form,
+        'form_action': reverse('authors:dashboard_recipe_create')
     }
 
     return render(request, 'authors/pages/dashboard_recipe.html', context)
