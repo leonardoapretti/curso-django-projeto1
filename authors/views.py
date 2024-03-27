@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from recipes.models import Recipe
 from utils.pagination import make_pagination
 from django.utils.text import slugify
+from django.utils.crypto import get_random_string
 import os
 
 PER_PAGE = os.environ.get('PER_PAGE', 6)
@@ -139,7 +140,7 @@ def dashboard_recipe_edit(request, id):
 
         recipe.save()
 
-        messages.success(request, 'Sua receita foi salva com sucesso!')
+        messages.success(request, 'Your recipe has been updated!')
         return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
 
     context = {
@@ -163,11 +164,15 @@ def dashboard_recipe_create(request):
         recipe.author = request.user
         recipe.preparation_steps_is_html = False
         recipe.is_published = False
-
+        recipe.slug = slugify(recipe.title)
+        exist_slug = Recipe.objects.filter(slug=recipe.slug).first()
+        if exist_slug is not None:
+            recipe.slug += get_random_string(length=4)
         recipe.save()
 
-        messages.success(request, 'Sua receita foi salva com sucesso!')
-        return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
+        messages.success(
+            request, 'Your recipe has been created! Update it if you need.')
+        return redirect(reverse('authors:dashboard_recipe_edit', args=(recipe.id,)))
 
     context = {
         'form': form,
@@ -175,3 +180,20 @@ def dashboard_recipe_create(request):
     }
 
     return render(request, 'authors/pages/dashboard_recipe.html', context)
+
+
+@login_required(login_url='authors:login', redirect_field_name='next')
+def dashboard_recipe_delete(request, id):
+    recipe = Recipe.objects.filter(
+        is_published=False,
+        author=request.user,
+        pk=id,
+    ).first()
+
+    if not recipe:
+        raise Http404()
+
+    recipe.delete()
+    messages.success(request, 'The recipe has been deleted')
+
+    return redirect(reverse('authors:dashboard'))
