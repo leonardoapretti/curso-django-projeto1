@@ -1,8 +1,8 @@
 function my_scope(){
-    const form = document.querySelector('.form-delete')
-    console.log(form)
+    const forms = document.querySelectorAll('.form-delete')
+    console.log(forms)
     
-    if(form){
+    for(const form of forms){
         console.log(form)
 
         form.addEventListener('submit', function(e){
@@ -15,4 +15,4 @@ function my_scope(){
     }
 }
 
-document.addEventListener('onload', my_scope())
+my_scope()
