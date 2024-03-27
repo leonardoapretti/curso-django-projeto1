@@ -7,8 +7,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from recipes.models import Recipe
 from utils.pagination import make_pagination
-from django.utils.text import slugify
-from django.utils.crypto import get_random_string
 import os
 
 PER_PAGE = os.environ.get('PER_PAGE', 6)
@@ -164,10 +162,6 @@ def dashboard_recipe_create(request):
         recipe.author = request.user
         recipe.preparation_steps_is_html = False
         recipe.is_published = False
-        recipe.slug = slugify(recipe.title)
-        exist_slug = Recipe.objects.filter(slug=recipe.slug).first()
-        if exist_slug is not None:
-            recipe.slug += get_random_string(length=4)
         recipe.save()
 
         messages.success(
