@@ -24,7 +24,7 @@ class DashboardRecipe(View):
     def render_recipe(self, context):
         return render(self.request, 'authors/pages/dashboard_recipe.html', context)
 
-    def get(self, request, id):
+    def get(self, request, id=None):
         recipe = self.get_recipe(id)
         form = AuthorRecipeForm(
             instance=recipe,
@@ -34,7 +34,7 @@ class DashboardRecipe(View):
         }
         return self.render_recipe(context)
 
-    def post(self, request, id):
+    def post(self, request, id=None):
         recipe = self.get_recipe(id)
         form = AuthorRecipeForm(
             request.POST or None,
@@ -47,8 +47,12 @@ class DashboardRecipe(View):
             recipe.preparation_steps_is_html = False
             recipe.is_published = False
             recipe.save()
-            messages.success(request, 'Your recipe has been updated!')
-            return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
+            if id is None:
+                messages.success(
+                    request, 'Your recipe has been created! Update it if you need.')
+            else:
+                messages.success(request, 'Your recipe has been updated!')
+            return redirect(reverse('authors:dashboard_recipe_edit', args=(recipe.id,)))
         context = {
             'recipe': recipe,
             'form': form,
