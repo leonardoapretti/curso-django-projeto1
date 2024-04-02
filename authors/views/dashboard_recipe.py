@@ -5,10 +5,17 @@ from django.http.response import Http404
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
+@method_decorator(
+    login_required(login_url='authors:login', redirect_field_name='next'),
+    # esse método está na classe View. Por padrão o django inicializa as variáveis da view e, em seguida, tenta descobrir qual o método correto da view (GET OU POST) através do método dispatch da classe View.
+    # Aqui, nós estamos decorando este método com lofin_required para que, caso não esteja logado, ele nem busque o método correto e apenas redirecione para a página de login
+    name='dispatch'
+)
 class DashboardRecipe(View):
-
     def get_recipe(self, id):
         recipe = None
         if id:
