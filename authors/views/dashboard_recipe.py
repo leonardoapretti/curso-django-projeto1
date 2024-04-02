@@ -65,3 +65,17 @@ class DashboardRecipe(View):
             'form': form,
         }
         return self.render_recipe(context)
+
+
+@method_decorator(
+    login_required(login_url='authors:login', redirect_field_name='next'),
+    # esse método está na classe View. Por padrão o django inicializa as variáveis da view e, em seguida, tenta descobrir qual o método correto da view (GET OU POST) através do método dispatch da classe View.
+    # Aqui, nós estamos decorando este método com lofin_required para que, caso não esteja logado, ele nem busque o método correto e apenas redirecione para a página de login
+    name='dispatch'
+)
+class DashboardRecipeDelete(DashboardRecipe):
+    def post(self, *args, **kwargs):
+        recipe = self.get_recipe(self.request.POST.get('id'))
+        recipe.delete()
+        messages.success(self.request, 'The recipe has been deleted')
+        return redirect(reverse('authors:dashboard'))
