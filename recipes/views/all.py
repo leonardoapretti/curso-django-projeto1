@@ -8,33 +8,6 @@ import os
 PER_PAGE = os.environ.get('PER_PAGE', 6)
 
 
-def home(request):
-    recipes = Recipe.objects.filter(is_published=True).order_by('created_at')
-    Recipe.objects.filter()
-    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
-
-    context = {
-        'recipes': page_obj,
-        'pagination_range': pagination_range,
-    }
-
-    return render(request, 'recipes/pages/home.html', context=context)
-
-
-def category(request, category_id):
-    recipes = get_list_or_404(Recipe.objects.filter(
-        category__id=category_id, is_published=True).order_by('-id'))
-
-    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
-
-    context = {
-        'recipes': page_obj,
-        'pagination_range': pagination_range,
-        'title': f'{recipes[0].category.name} - Category',
-    }
-    return render(request, 'recipes/pages/category.html', context=context)
-
-
 def recipe(request, id_recipe):
     recipe = get_object_or_404(Recipe.objects.filter(
         id=id_recipe, is_published=True))
